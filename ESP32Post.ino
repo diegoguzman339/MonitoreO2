@@ -1,17 +1,18 @@
 #include <WiFi.h>
 #include <HTTPClient.h> // nos permite hacer peticiones http
 #include <ArduinoJson.h>
-#include <DHT.h>
+#include "DHT.h"
 
-#define DHTPIN 27
-#define DHTTYPE  DHT22
+//DHT22
+#define pinDatos 33  //GPIO4 = D2 en D1 Mini, D4 en ESP32
+DHT sensorTH (pinDatos, DHT22);    //Crea objeto sensorTH
 
-DHT dht(DHTPIN, DHTTYPE, 22); 
+//MQ135
+int s_analogica_mq135=12;
 
-
-// credenciales de la red a la cual nos conectaremos
-const char* ssid = "red";
-const char* password = "password";
+// Credenciales wifi
+#define WIFI_SSID "Diego"
+#define WIFI_PASSWORD "1234567890"
 //const char* ssid = "Tenda_3DE948";
 //const char* password = "18264838";
 //IPAddress ip(192,168,10,9);     
@@ -22,7 +23,7 @@ const char* password = "password";
 
 void setup() {
     Serial.begin(115200);
-     dht.begin(); 
+     sensorTH.begin ();   //Inicializa pines del sensor
 
     // conexión a la red
   //    WiFi.mode(WIFI_STA);
@@ -48,12 +49,10 @@ void loop() {
  //se agregan valores al documento
 DynamicJsonDocument doc(2048);
 
-  doc["temp"] = dht.readTemperature();
-  doc["hum"] = dht.readHumidity();
-  doc["gas"] =  analogRead(35);
-  doc["ruido"] =  analogRead(34)/100;
-  doc["nombre"] =  "ITSRLL";
-  //doc["fecha"] = rtc.getDate();
+  doc["dioxido"] =  analogRead(s_analogica_mq135);
+  doc["humedad"] = sensorTH.readHumidity();
+  doc["temperatura"] = sensorTH.readTemperature();
+  
 
 // documento serializado
 String json;
@@ -62,7 +61,7 @@ serializeJson(doc, json);
 WiFiClient client;  // or WiFiClientSecure for HTTPS
 HTTPClient http;
 // Send request
-http.begin("https://link de la API/insertar");
+http.begin("https://https://invernadero.onrender.com/insertar");
 //cabeceras JSON
 http.addHeader("Content-Type", "application/json");
 int res = http.POST(json);
@@ -73,6 +72,6 @@ Serial.println(http.getString());
 Serial.println(res);
 // desconecta
 http.end();
-delay(60000);
+delay(30000);
 }
 }
