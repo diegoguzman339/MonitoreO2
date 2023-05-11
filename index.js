@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/', (req, res) => {
   res.send(
-    '<h1>API Express & Firebase MonitoreO2</h1><ul><li><p><b>GET /ver</b></p></li><li><p><b>GET /valor</b></p></li><li><p><b>GET /estado</b></p></li><li><p><b>POST /insertar</b>  => {temp, hum, gas, ruido, nombre, fecha}</p></li><li><p><b>POST /encender</b></p></li><li><p><b>POST /apagar</b></p></li><li><p>/encender</p></li><li><p>/apagar</p></li><li><p>/estado</p></li></ul>')
+    '<h1>API Express & Firebase Germinadora</h1><ul><li><p><b>GET /ver</b></p></li><li><p><b>GET /valor</b></p></li><li><p><b>GET /estado</b></p></li><li><p><b>POST /insertar</b>  => {temp, hum, gas, ruido, nombre, fecha}</p></li><li><p><b>POST /encender</b></p></li><li><p><b>POST /apagar</b></p></li><li><p>/encender</p></li><li><p>/apagar</p></li><li><p>/estado</p></li></ul>')
 })
 
 app.get('/ver', (req, res) => {
@@ -20,7 +20,7 @@ app.get('/ver', (req, res) => {
       timestampsInSnapshots: true
     });
     var wholeData = []
-	db.collection('Valores').orderBy('fecha', 'asc').get()
+	db.collection('valores').orderBy('fecha', 'asc').get()
     .then(snapshot => {
       snapshot.forEach(doc => {
       
@@ -77,7 +77,7 @@ app.get('/valor', (req, res) => {
       timestampsInSnapshots: true
     });
     var wholeData = []
-	db.collection('Valores').limit(1).orderBy('fecha','desc').get()
+	db.collection('valores').limit(1).orderBy('fecha','desc').get()
     .then(snapshot => {
       snapshot.forEach(doc => {
       
@@ -96,7 +96,7 @@ app.get('/grafica', (req, res) => {
       timestampsInSnapshots: true
     });
     var wholeData = []
-	db.collection('Valores').limit(10).orderBy('fecha','desc').get()
+	db.collection('valores').limit(10).orderBy('fecha','desc').get()
     .then(snapshot => {
       snapshot.forEach(doc => {
       
@@ -116,22 +116,19 @@ app.post('/insertar', (req, res)=>{
       timestampsInSnapshots: true
     });
     
-    db.collection('Valores').add({
+    db.collection('valores').add({
      
-      temp: req.body.temp,
-      hum: req.body.hum,
-      gas: req.body.gas,
-      ruido: req.body.ruido,
-      nombre: req.body.nombre,
-      fecha: new Date().toJSON()
+      dioxido: req.body.dioxido,
+      fecha: new Date().toJSON(),
+      humedad: req.body.humedad,
+      temperatura: req.body.temperatura
+      
     });
     res.send({
-      temp: req.body.temp,
-      hum: req.body.hum,
-      gas: req.body.gas,
-      ruido: req.body.ruido,
-      nombre: req.body.nombre,
+      dioxido: req.body.dioxido,
       fecha: new Date(),
+      humedad: req.body.humedad,
+      temperatura: req.body.temperatura,
       status: 'Valores insertados!'
   })
 })
