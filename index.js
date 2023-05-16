@@ -112,21 +112,16 @@ app.get('/grafica', (req, res) => {
 
 app.post('/insertar', (req, res)=>{
   const db = fire.firestore();
-	db.settings({
-      timestampsInSnapshots: true
-    });
     
     db.collection('valores').add({
      
       dioxido: req.body.dioxido,
-      fecha: new Date().toJSON(),
       humedad: req.body.humedad,
       temperatura: req.body.temperatura
       
     });
     res.send({
       dioxido: req.body.dioxido,
-      fecha: new Date(),
       humedad: req.body.humedad,
       temperatura: req.body.temperatura,
       status: 'Valores insertados!'
