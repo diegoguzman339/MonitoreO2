@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/', (req, res) => {
   res.send(
-    '<h1>API Express & Firebase Invernadero</h1><ul><li><p><b>GET /ver</b></p></li><li><p><b>GET /valor</b></p></li><li><p><b>GET /estado</b></p></li><li><p><b>POST /insertar</b>  => {dioxido, fecha, humedad, temperatura}</p></li><li><p><b>POST /encender</b></p></li><li><p><b>POST /apagar</b></p></li><li><p>/encender</p></li><li><p>/apagar</p></li><li><p>/estado</p></li></ul>')
+    '<h1>API Express & Firebase Invernadero</h1><ul><li><p><b>GET /ver</b></p></li><li><p><b>GET /valor</b></p></li><li><p><b>GET /tempalta</b></p></li><li><p><b>GET /estado</b></p></li><li><p><b>POST /insertar</b>  => {dioxido, fecha, humedad, temperatura}</p></li><li><p><b>POST /encender</b></p></li><li><p><b>POST /apagar</b></p></li><li><p>/encender</p></li><li><p>/apagar</p></li><li><p>/estado</p></li></ul>')
 })
 
 app.get('/ver', (req, res) => {
@@ -90,6 +90,28 @@ app.get('/valor', (req, res) => {
       console.log('Error!', error);
   })
 })
+
+app.get('/tempalta', (req, res) => {
+  const db = fire.firestore();
+    db.settings({
+      timestampsInSnapshots: true
+    });
+    var wholeData = []
+	db.collection('valores').limit(10).where('temperatura','>', 25).get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+      
+        wholeData.push(doc.data())
+      });
+      console.log(wholeData)
+      res.send(wholeData)
+    })
+    .catch(error => {
+      console.log('Error!', error);
+  })
+})
+
+
 app.get('/grafica', (req, res) => {
   const db = fire.firestore();
     db.settings({
@@ -112,18 +134,23 @@ app.get('/grafica', (req, res) => {
 
 app.post('/insertar', (req, res)=>{
   const db = fire.firestore();
+  db.settings({
+    timestampsInSnapshots: true
+  })
     
     db.collection('valores').add({
      
       dioxido: req.body.dioxido,
       humedad: req.body.humedad,
-      temperatura: req.body.temperatura
+      temperatura: req.body.temperatura,
+      fecha: new Date().toJSON()
       
     });
     res.send({
       dioxido: req.body.dioxido,
       humedad: req.body.humedad,
       temperatura: req.body.temperatura,
+      fecha: new Date().toJSON(),
       status: 'Valores insertados!'
   })
 })
