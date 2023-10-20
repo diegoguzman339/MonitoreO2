@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/', (req, res) => {
   res.send(
-    '<h1>API Express & Firebase Invernadero</h1><ul><li><p><b>GET /ver</b></p></li><li><p><b>GET /valor</b></p></li><li><p><b>GET /tempalta</b></p></li><li><p><b>GET /estado</b></p></li><li><p><b>POST /insertar</b>  => {dioxido, fecha, humedad, temperatura}</p></li><li><p><b>POST /encender</b></p></li><li><p><b>POST /apagar</b></p></li><li><p>/encender</p></li><li><p>/apagar</p></li><li><p>/estado</p></li></ul>')
+    '<h1>API Express & Firebase MonitoreO2</h1><ul><li><p><b>GET /ver</b></p></li><li><p><b>GET /valor</b></p></li><li><p><b>GET /tempalta</b></p></li><li><p><b>GET /estado</b></p></li><li><p><b>POST /insertar</b>  => {fecha, gas, humedad, ruido, temperatura}</p></li><li><p><b>POST /encender</b></p></li><li><p><b>POST /apagar</b></p></li><li><p>/encender</p></li><li><p>/apagar</p></li><li><p>/estado</p></li></ul>')
 })
 
 app.get('/ver', (req, res) => {
@@ -140,15 +140,17 @@ app.post('/insertar', (req, res)=>{
     
     db.collection('valores').add({
      
-      dioxido: req.body.dioxido,
+      gas: req.body.gas,
       humedad: req.body.humedad,
+      ruido: req.body.ruido,
       temperatura: req.body.temperatura,
       fecha: new Date().toJSON()
       
     });
     res.send({
-      dioxido: req.body.dioxido,
+      gas: req.body.gas,
       humedad: req.body.humedad,
+      ruido: req.body.ruido,
       temperatura: req.body.temperatura,
       fecha: new Date().toJSON(),
       status: 'Valores insertados!'
